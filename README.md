@@ -8,6 +8,8 @@
 ## 🚀 一键部署
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/joeseesun/word-root-workshop)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/joeseesun/word-root-workshop)
+[![Deploy to GitHub Pages](https://img.shields.io/badge/Deploy%20to-GitHub%20Pages-181717?style=flat&logo=github)](https://github.com/joeseesun/word-root-workshop/settings/pages)
 
 ## 🎯 项目简介
 
@@ -23,10 +25,11 @@
 
 ### 🎨 设计风格
 
-采用 **Claymorphism（黏土质感）** 设计风格：
-- 软萌的3D质感，降低学习焦虑感
-- 厚实的视觉元素，增强记忆效果
-- 玩具般的风格，让学习变得有趣
+采用 **极简主义（Minimalism）** 设计风格：
+- Less is More，去除一切多余元素
+- 清晰的视觉层级，专注内容本身
+- 柔和的配色，减少视觉疲劳
+- 流畅的动效，提升使用体验
 
 ## 🚀 快速开始
 
@@ -89,8 +92,8 @@ npx http-server -p 8000
 ## 🛠️ 技术栈
 
 - **前端框架**: 无框架，纯原生 HTML/CSS/JavaScript
-- **样式**: Tailwind CSS (CDN)
-- **字体**: Google Fonts (Baloo 2 + Comic Neue)
+- **样式**: 极简主义设计系统（minimal.css）
+- **字体**: Google Fonts (Inter)
 - **存储**: LocalStorage
 - **部署**: 静态托管（Vercel / Netlify / GitHub Pages）
 
@@ -99,17 +102,17 @@ npx http-server -p 8000
 ```
 word-root-workshop/
 ├── index.html              # 首页
-├── learn.html              # 学习页面
-├── challenge.html          # 闯关页面
-├── progress.html           # 进度页面
+├── learn.html              # 学习模式
+├── flashcard.html          # 闪卡模式
+├── roots.html              # 词根索引
+├── root-detail.html        # 词根详情
+├── progress.html           # 学习进度
 ├── css/
-│   └── styles.css          # 全局样式（Claymorphism）
+│   └── minimal.css         # 极简主义样式系统
 ├── js/
 │   ├── storage.js          # LocalStorage 数据管理
-│   ├── wordData.js         # 词根数据库
-│   ├── learn.js            # 学习页面逻辑
-│   ├── challenge.js        # 闯关页面逻辑
-│   └── progress.js         # 进度页面逻辑
+│   └── wordData.js         # 300 个词根数据库
+├── vercel.json             # Vercel 部署配置
 └── README.md               # 项目说明
 ```
 
@@ -164,19 +167,23 @@ word-root-workshop/
 
 ### 修改设计风格
 
-编辑 `css/styles.css`，调整颜色和效果：
+编辑 `css/minimal.css`，调整颜色和效果：
 
 ```css
-/* 主色调 */
---primary: #4F46E5;
---secondary: #818CF8;
---success: #22C55E;
+:root {
+  /* 主色调 */
+  --color-accent: #FBBF24;          /* 强调色（黄色） */
+  --color-text: #0F172A;            /* 主文字 */
+  --color-text-secondary: #64748B;  /* 次要文字 */
+  --color-border: #E2E8F0;          /* 边框 */
+  --color-bg: #FFFFFF;              /* 背景 */
 
-/* 黏土效果 */
-.clay-card {
-  border-radius: 24px;
-  border: 4px solid var(--secondary);
-  box-shadow: 0 8px 0 var(--primary), inset 0 2px 0 rgba(255,255,255,0.5);
+  /* 间距系统（8px 网格） */
+  --space-md: 16px;
+  --space-lg: 24px;
+
+  /* 圆角 */
+  --radius: 8px;
 }
 ```
 
@@ -259,14 +266,14 @@ git push origin main
 
 ## 📝 更新日志
 
-### v1.0.0 (2024-02-25)
+### v1.0.0 (2025-02-25)
 
 - 🎉 初始版本发布
-- ✨ 学习模式（10个核心词根）
-- ✨ 闯关模式（初级关卡）
+- ✨ 学习模式（300 个核心词根）
+- ✨ 闪卡复习模式
+- ✨ 词根索引与搜索
 - ✨ 进度追踪与成就系统
-- ✨ 数据导出/导入功能
-- 🎨 Claymorphism 设计风格
+- 🎨 极简主义设计风格
 
 ## 🤝 贡献指南
 
@@ -292,10 +299,10 @@ git push origin feature/your-feature
 
 ## 🙏 致谢
 
-- 设计灵感: [Claymorphism 设计趋势](https://hype4.academy/articles/design/claymorphism-in-user-interfaces)
-- 字体: [Google Fonts](https://fonts.google.com)
-- 样式框架: [Tailwind CSS](https://tailwindcss.com)
+- 设计灵感: 极简主义设计哲学 - Less is More
+- 字体: [Google Fonts - Inter](https://fonts.google.com/specimen/Inter)
 - 词根数据参考: 各大词汇书籍和在线资源
+- 部署平台: [Vercel](https://vercel.com) / [Netlify](https://netlify.com)
 
 ## 📧 联系方式
 
