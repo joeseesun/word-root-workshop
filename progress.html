@@ -137,7 +137,159 @@
 
   <script src="js/storage.js"></script>
   <script src="js/wordData.js"></script>
-  <script src="js/progress.js"></script>
+  <script>
+    // 进度页面逻辑
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProgress();
+    });
+
+    function loadProgress() {
+      const progress = StorageManager.getProgress();
+      const achievements = StorageManager.getAchievements();
+
+      // 已掌握词根
+      const masteredCount = progress.masteredRoots.length;
+      document.getElementById('masteredDisplay').textContent = masteredCount;
+
+      // 当前等级
+      const level = progress.level || 1;
+      document.getElementById('levelDisplay').textContent = `Lv.${level}`;
+
+      // 连续学习天数
+      document.getElementById('streakDisplay').textContent = progress.studyStreak || 0;
+
+      // 进度百分比
+      const percentage = Math.floor((masteredCount / WordRoots.length) * 100);
+      document.getElementById('progressPercentage').textContent = `${percentage}%`;
+      document.getElementById('overallProgressBar').style.width = `${percentage}%`;
+
+      // 距离下一级
+      const nextLevelRequirement = level * 10;
+      const toNextLevel = Math.max(0, nextLevelRequirement - masteredCount);
+      document.getElementById('toNextLevel').textContent = toNextLevel;
+
+      // 上次学习时间
+      if (progress.lastStudyDate) {
+        const lastDate = new Date(progress.lastStudyDate);
+        const now = new Date();
+        const diffDays = Math.floor((now - lastDate) / (1000 * 60 * 60 * 24));
+
+        let dateText;
+        if (diffDays === 0) {
+          dateText = '今天';
+        } else if (diffDays === 1) {
+          dateText = '昨天';
+        } else {
+          dateText = `${diffDays} 天前`;
+        }
+        document.getElementById('lastStudyDate').textContent = dateText;
+      } else {
+        document.getElementById('lastStudyDate').textContent = '尚未学习';
+      }
+
+      // 学习次数和积分
+      document.getElementById('sessionCount').textContent = progress.sessionCount || 0;
+      document.getElementById('totalScore').textContent = progress.totalScore || 0;
+
+      // 成就列表
+      renderAchievements(achievements);
+    }
+
+    function renderAchievements(achievements) {
+      const container = document.getElementById('achievementsList');
+      const noAchievements = document.getElementById('noAchievements');
+
+      if (!achievements || achievements.length === 0) {
+        container.style.display = 'none';
+        noAchievements.style.display = 'block';
+        return;
+      }
+
+      container.style.display = 'grid';
+      noAchievements.style.display = 'none';
+
+      container.innerHTML = achievements.map(achievement => `
+        <div style="background: var(--color-bg-secondary); border: 2px solid var(--color-border); border-radius: 12px; padding: 20px;">
+          <div style="font-size: 2rem; margin-bottom: 12px;">${achievement.icon}</div>
+          <div style="font-size: 1.125rem; font-weight: 600; margin-bottom: 8px;">${achievement.title}</div>
+          <div style="font-size: 0.875rem; color: var(--color-text-secondary); margin-bottom: 12px;">${achievement.description}</div>
+          <div style="font-size: 0.75rem; color: var(--color-text-tertiary);">
+            ${new Date(achievement.unlockedAt).toLocaleDateString('zh-CN')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function exportProgress() {
+      const progress = StorageManager.getProgress();
+      const achievements = StorageManager.getAchievements();
+
+      const data = {
+        progress,
+        achievements,
+        exportDate: new Date().toISOString()
+      };
+
+      const dataStr = JSON.stringify(data, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `word-roots-progress-${Date.now()}.json`;
+      link.click();
+
+      URL.revokeObjectURL(url);
+      alert('学习数据已导出！');
+    }
+
+    function importProgress() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const data = JSON.parse(event.target.result);
+
+            if (data.progress) {
+              StorageManager.saveProgress(data.progress);
+            }
+
+            if (data.achievements) {
+              localStorage.setItem('wordRootAchievements', JSON.stringify(data.achievements));
+            }
+
+            alert('学习数据已导入！');
+            location.reload();
+          } catch (error) {
+            alert('导入失败：文件格式错误');
+            console.error('Import error:', error);
+          }
+        };
+
+        reader.readAsText(file);
+      };
+
+      input.click();
+    }
+
+    function confirmClearData() {
+      if (confirm('确定要清除所有学习数据吗？此操作不可恢复！')) {
+        if (confirm('真的确定吗？这将清除您的所有学习进度和成就！')) {
+          localStorage.removeItem('wordRootProgress');
+          localStorage.removeItem('wordRootAchievements');
+          alert('所有数据已清除');
+          location.reload();
+        }
+      }
+    }
+  </script>
 
 </body>
 </html>

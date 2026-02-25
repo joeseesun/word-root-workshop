@@ -347,7 +347,133 @@
   </div>
 
   <script src="js/wordData.js"></script>
-  <script src="js/root-detail.js"></script>
+  <script>
+    // 词根详情页面逻辑
+    let currentRoot = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadRootDetail();
+    });
+
+    function loadRootDetail() {
+      // 从 URL 参数获取词根 ID
+      const urlParams = new URLSearchParams(window.location.search);
+      const rootId = parseInt(urlParams.get('id'));
+
+      if (!rootId) {
+        alert('未指定词根 ID');
+        window.location.href = 'roots.html';
+        return;
+      }
+
+      // 查找词根
+      currentRoot = WordRoots.find(r => r.id === rootId);
+
+      if (!currentRoot) {
+        alert('未找到词根');
+        window.location.href = 'roots.html';
+        return;
+      }
+
+      // 渲染内容
+      renderRoot(currentRoot);
+    }
+
+    function renderRoot(root) {
+      // 更新页面标题
+      document.title = `${root.root} - 词根详情 - 词根词缀记忆工坊`;
+
+      // 更新头部信息
+      document.getElementById('rootName').textContent = root.root;
+      document.getElementById('rootOrigin').textContent = root.origin;
+      document.getElementById('rootMeaning').textContent = root.meaning;
+
+      // 更新描述
+      document.getElementById('rootDescription').textContent = root.description;
+
+      // 渲染例词
+      renderExamples(root.examples);
+
+      // 渲染测试题
+      renderQuiz(root.quiz);
+    }
+
+    function renderExamples(examples) {
+      const container = document.getElementById('examplesGrid');
+
+      container.innerHTML = examples.map(example => {
+        const parts = [];
+
+        if (example.breakdown.prefix) {
+          parts.push(`<span class="breakdown-part prefix">${example.breakdown.prefix}</span>`);
+        }
+
+        if (example.breakdown.root) {
+          parts.push(`<span class="breakdown-part root">${example.breakdown.root}</span>`);
+        }
+
+        if (example.breakdown.suffix) {
+          parts.push(`<span class="breakdown-part suffix">${example.breakdown.suffix}</span>`);
+        }
+
+        return `
+          <div class="example-card">
+            <div class="example-word">${example.word}</div>
+            <div class="example-breakdown">
+              ${parts.join('<span class="breakdown-arrow">+</span>')}
+            </div>
+            <div class="example-meaning">${example.meaning}</div>
+            <div class="example-explanation">${example.explanation}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderQuiz(quiz) {
+      document.getElementById('quizQuestion').textContent = quiz.question;
+
+      const optionsContainer = document.getElementById('quizOptions');
+      optionsContainer.innerHTML = quiz.options.map((option, index) => `
+        <button class="quiz-option" onclick="checkAnswer(${index})">
+          ${option}
+        </button>
+      `).join('');
+    }
+
+    function checkAnswer(selectedIndex) {
+      const quiz = currentRoot.quiz;
+      const isCorrect = selectedIndex === quiz.correctAnswer;
+
+      // 更新选项样式
+      const options = document.querySelectorAll('.quiz-option');
+      options.forEach((btn, index) => {
+        btn.disabled = true;
+
+        if (index === quiz.correctAnswer) {
+          btn.classList.add('correct');
+        } else if (index === selectedIndex && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      // 显示反馈
+      const feedbackContainer = document.getElementById('quizFeedback');
+
+      if (isCorrect) {
+        feedbackContainer.innerHTML = `
+          <div class="quiz-feedback correct">
+            ✓ 答对了！继续保持
+          </div>
+        `;
+      } else {
+        feedbackContainer.innerHTML = `
+          <div class="quiz-feedback wrong">
+            ✗ 答错了。正确答案是：${quiz.options[quiz.correctAnswer]}
+          </div>
+        `;
+      }
+    }
+  </script>
 
 </body>
 </html>

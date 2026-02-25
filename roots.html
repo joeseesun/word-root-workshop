@@ -279,8 +279,120 @@
     </div>
   </main>
 
+  <script src="js/storage.js"></script>
   <script src="js/wordData.js"></script>
-  <script src="js/roots.js"></script>
+  <script>
+    // 词根索引页面逻辑
+    let filteredRoots = [...WordRoots];
+    let currentFilter = 'all';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderRoots(filteredRoots);
+      updateStats();
+      setupSearch();
+      setupFilter();
+    });
+
+    function renderRoots(roots) {
+      const container = document.getElementById('rootsGrid');
+      const emptyState = document.getElementById('emptyState');
+      const progress = StorageManager.getProgress();
+      const masteredIds = new Set(progress.masteredRoots);
+
+      if (roots.length === 0) {
+        container.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      container.style.display = 'grid';
+      emptyState.style.display = 'none';
+
+      container.innerHTML = roots.map(root => {
+        const isMastered = masteredIds.has(root.id);
+        const masteredBadge = isMastered ? '<span style="position: absolute; top: 12px; right: 12px; background: var(--color-accent); color: var(--color-text); padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">✓</span>' : '';
+
+        const exampleWords = root.examples.slice(0, 3).map(ex => ex.word).join(', ');
+
+        return `
+          <a href="root-detail.html?id=${root.id}" class="root-card" style="position: relative; display: block; text-decoration: none; color: inherit;">
+            ${masteredBadge}
+            <div class="root-header">
+              <div class="root-name">${root.root}</div>
+              <div class="root-origin">${root.origin}</div>
+            </div>
+            <div class="root-meaning">${root.meaning}</div>
+            <div class="root-examples">
+              ${root.examples.slice(0, 3).map(ex => `<span class="example-tag">${ex.word}</span>`).join('')}
+            </div>
+            <div class="root-id">#${root.id}</div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function updateStats() {
+      const displayCount = document.getElementById('displayCount');
+      if (displayCount) {
+        displayCount.textContent = filteredRoots.length;
+      }
+    }
+
+    function setupSearch() {
+      const searchInput = document.getElementById('searchInput');
+      if (!searchInput) return;
+
+      searchInput.addEventListener('input', (e) => {
+        const keyword = e.target.value.toLowerCase().trim();
+        applyFilters(keyword, currentFilter);
+      });
+    }
+
+    function setupFilter() {
+      const filterButtons = document.querySelectorAll('.filter-tab');
+      filterButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+          // 更新按钮状态
+          filterButtons.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+
+          // 应用筛选
+          currentFilter = this.dataset.filter;
+          const keyword = document.getElementById('searchInput')?.value.toLowerCase().trim() || '';
+          applyFilters(keyword, currentFilter);
+        });
+      });
+    }
+
+    function applyFilters(keyword = '', filterType = 'all') {
+      let results = [...WordRoots];
+
+      // 分类筛选（这里简化处理，实际可以根据 origin 或其他字段筛选）
+      // 由于数据中没有明确的 prefix/root/suffix 字段，这里按 origin 筛选
+      if (filterType !== 'all') {
+        // 可以根据实际需要调整筛选逻辑
+        // 暂时保留所有数据
+      }
+
+      // 关键词搜索
+      if (keyword) {
+        results = results.filter(root => {
+          return root.root.toLowerCase().includes(keyword) ||
+                 root.meaning.toLowerCase().includes(keyword) ||
+                 root.description.toLowerCase().includes(keyword) ||
+                 root.origin.toLowerCase().includes(keyword) ||
+                 root.examples.some(ex =>
+                   ex.word.toLowerCase().includes(keyword) ||
+                   ex.meaning.toLowerCase().includes(keyword)
+                 );
+        });
+      }
+
+      filteredRoots = results;
+      renderRoots(filteredRoots);
+      updateStats();
+    }
+  </script>
 
 </body>
 </html>
