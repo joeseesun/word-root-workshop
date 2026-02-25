@@ -25,7 +25,7 @@
 
     .flashcard {
       width: 100%;
-      height: 500px;
+      height: 600px;
       perspective: 1000px;
       margin-bottom: 48px;
     }
@@ -99,26 +99,26 @@
     }
 
     .flashcard-description {
-      font-size: 1.125rem;
-      line-height: 1.8;
+      font-size: 0.9375rem;
+      line-height: 1.6;
       color: var(--color-text-secondary);
-      margin-bottom: 24px;
-      max-height: 200px;
-      overflow-y: auto;
+      margin-bottom: 20px;
+      max-height: none;
+      overflow-y: visible;
     }
 
     .flashcard-examples {
       width: 100%;
-      max-height: 180px;
-      overflow-y: auto;
+      max-height: none;
+      overflow-y: visible;
       margin-top: 16px;
     }
 
     .flashcard-example {
-      font-size: 1rem;
+      font-size: 0.875rem;
       color: var(--color-text);
-      margin-bottom: 12px;
-      padding: 12px;
+      margin-bottom: 8px;
+      padding: 10px;
       background: var(--color-bg-secondary);
       border-radius: 8px;
       text-align: left;
@@ -247,18 +247,18 @@
 
         <!-- 背面 -->
         <div class="flashcard-back">
-          <div class="flashcard-root" id="backRoot" style="font-size: 3rem; margin-bottom: 16px;">-</div>
+          <div class="flashcard-root" id="backRoot" style="font-size: 2.5rem; margin-bottom: 12px;">-</div>
           <div class="flashcard-description" id="backDescription">-</div>
           <div class="flashcard-examples" id="backExamples">
             <!-- 动态生成 -->
           </div>
 
           <!-- 复习按钮 -->
-          <div style="margin-top: 32px; display: flex; gap: 12px; justify-content: center;">
-            <button onclick="markAsKnown()" style="padding: 12px 24px; background: var(--color-accent); border: none; border-radius: 8px; font-weight: 600; color: var(--color-text); cursor: pointer; transition: all 200ms ease;">
+          <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: center;">
+            <button onclick="markAsKnown()" style="padding: 10px 20px; background: var(--color-accent); border: none; border-radius: 8px; font-weight: 600; color: var(--color-text); cursor: pointer; transition: all 200ms ease; font-size: 0.9375rem;">
               认识 ✓
             </button>
-            <button onclick="nextCard()" style="padding: 12px 24px; background: white; border: 2px solid var(--color-border); border-radius: 8px; font-weight: 600; color: var(--color-text); cursor: pointer; transition: all 200ms ease;">
+            <button onclick="nextCard()" style="padding: 10px 20px; background: white; border: 2px solid var(--color-border); border-radius: 8px; font-weight: 600; color: var(--color-text); cursor: pointer; transition: all 200ms ease; font-size: 0.9375rem;">
               继续练习
             </button>
           </div>
